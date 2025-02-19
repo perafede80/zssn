@@ -7,5 +7,7 @@ export interface Survivor {
     gender: Gender;
     latitude: number;
     longitude: number;
+    is_infected: boolean;
+    reports_count: number;
     inventory?: { item: string; quantity: number }[]; // Optional inventory field
 }
