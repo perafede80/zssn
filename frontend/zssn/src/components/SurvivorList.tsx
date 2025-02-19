@@ -11,7 +11,7 @@ import {
 import SurvivorCard from './SurvivorCard';
 
 const SurvivorList: React.FC = () => {
-    const [survivors, setSurvivors] = useState<Survivor[]>([]);
+    const [survivors, setSurvivors] = useState<Survivor[]>([]); 
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -34,7 +34,7 @@ const SurvivorList: React.FC = () => {
     if (error) return <Alert severity="error">{error}</Alert>;
 
     return (
-        <Box p={4}>
+        <Box p={4} data-testid="survivors-list">
             <Typography variant="h4" gutterBottom>
                 Survivors
             </Typography>
