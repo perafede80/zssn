@@ -1,0 +1,6 @@
+backend/.idea/
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+*.pyo

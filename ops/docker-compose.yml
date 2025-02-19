@@ -1,0 +1,87 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: zssn_db
+    restart: always
+    volumes:
+      - ../backend/scripts:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: zssn_db
+      POSTGRES_USER: zssn_user
+      POSTGRES_PASSWORD: zssn_password
+    ports:
+      - "5432:5432"
+    networks:
+      - zssn_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zssn_user -d zssn_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer
+    container_name: zssn_adminer
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    networks: 
+      - zssn_network
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+
+
+  backend:
+    build: ../backend
+    container_name: zssn_backend
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ../backend:/app
+    env_file:
+      - ../backend/.env
+    ports:
+      - "8000:8000"
+    networks: 
+      - zssn_network
+    healthcheck:  
+      test: ["CMD-SHELL", "curl --silent --fail http://localhost:8000/health || { echo 'Backend health check failed'; exit 1; }"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build: ../frontend/zssn
+    container_name: zssn_frontend
+    restart: always
+    depends_on:
+      backend:
+        condition: service_healthy
+    volumes:
+      - ../frontend/zssn:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_NO_WARNINGS=1 
+    networks:
+      - zssn_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail http://localhost:3000 || { echo 'Frontend health check failed'; exit 1; }"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  zssn_network:
+    driver: bridge
