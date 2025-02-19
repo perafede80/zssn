@@ -20,16 +20,13 @@ class SurvivorSerializer(serializers.ModelSerializer):
         depth = 2
 
     def create(self, validated_data):
-        """
-        Create a new Survivor and their associated Inventory.
-        """
-        inventory_data = validated_data.pop('inventory', None)
-
-        if not inventory_data:
-            raise serializers.ValidationError("Initial inventory must be declared.")
-
+        inventory_data = validated_data.pop("inventory")
         survivor = Survivor.objects.create(**validated_data)
-        Inventory.objects.create(survivor=survivor, **inventory_data)
+
+        Inventory.objects.bulk_create(
+            [Inventory(survivor=survivor, **item) for item in inventory_data]
+        )
+
         return survivor
 
     def update(self, instance, validated_data):
