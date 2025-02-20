@@ -9,5 +9,10 @@ export interface Survivor {
     longitude: number;
     is_infected: boolean;
     reports_count: number;
-    inventory?: { item: string; quantity: number }[]; // Optional inventory field
+    inventory?: InventoryItem[]; 
+}
+
+interface InventoryItem {
+    item: string; 
+    quantity: number;
 }
