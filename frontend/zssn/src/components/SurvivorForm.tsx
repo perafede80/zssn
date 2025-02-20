@@ -14,12 +14,13 @@ import {
     IconButton,
 } from "@mui/material";
 import InventoryIcon from "@mui/icons-material/Inventory";
-import WaterDropIcon from "@mui/icons-material/Opacity"; // Water
-import FastfoodIcon from "@mui/icons-material/Fastfood"; // Food
-import LocalPharmacyIcon from "@mui/icons-material/LocalPharmacy"; // Medication
-import SportsMmaIcon from "@mui/icons-material/SportsMma"; // Ammunition
+import WaterDropIcon from "@mui/icons-material/Opacity";
+import FastfoodIcon from "@mui/icons-material/Fastfood";
+import LocalPharmacyIcon from "@mui/icons-material/LocalPharmacy";
+import SportsMmaIcon from "@mui/icons-material/SportsMma";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { useNavigate } from "react-router-dom";
 
 // Define inventory items with Material UI icons
 const inventoryItems = [
@@ -40,41 +41,48 @@ const SurvivorForm: React.FC = () => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [inventoryError, setInventoryError] = useState<boolean>(false);
     const [success, setSuccess] = useState<boolean>(false);
     const [inventoryModalOpen, setInventoryModalOpen] = useState(false);
+    const navigate = useNavigate();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let { name, value } = e.target;
-
-        // Convert numeric values
         let numericValue = Number(value);
 
         // Apply validation rules
         if (name === "latitude" && (numericValue < -90 || numericValue > 90)) return;
         if (name === "longitude" && (numericValue < -180 || numericValue > 180)) return;
 
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleInventoryChange = (item: string, change: number) => {
         setFormData((prevData) => {
             const newInventory = { ...prevData.inventory };
             newInventory[item] = (newInventory[item] || 0) + change;
-            if (newInventory[item] < 0) delete newInventory[item]; // Remove item if zero
+            if (newInventory[item] <= 0) {
+                delete newInventory[item]; // Remove item if zero
+            }
             return { ...prevData, inventory: newInventory };
         });
+
+        setInventoryError(false); // ✅ Reset error when inventory is updated
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // 🚨 **Prevent submission if inventory is empty**
+        if (Object.keys(formData.inventory).length === 0) {
+            setInventoryError(true);
+            return;
+        }
+
         setLoading(true);
         setError(null);
         setSuccess(false);
 
-        // Convert gender format
         const genderMap: Record<string, string> = { Male: "M", Female: "F", Other: "O" };
 
         try {
@@ -85,13 +93,14 @@ const SurvivorForm: React.FC = () => {
                 latitude: Number(formData.latitude),
                 longitude: Number(formData.longitude),
                 inventory: Object.entries(formData.inventory).map(([item, quantity]) => ({
-                    item: item.toUpperCase(), // Ensure uppercase inventory items
+                    item: item.toUpperCase(),
                     quantity,
                 })),
             });
 
             setSuccess(true);
             setFormData({ name: "", age: "", gender: "", latitude: "", longitude: "", inventory: {} });
+            navigate("/survivors"); // ✅ Redirect after successful creation
         } catch (err) {
             setError((err as Error).message);
         } finally {
@@ -105,6 +114,7 @@ const SurvivorForm: React.FC = () => {
 
             {error && <Alert severity="error">{error}</Alert>}
             {success && <Alert severity="success">Survivor successfully created!</Alert>}
+            {inventoryError && <Alert severity="warning">Please select at least one inventory item.</Alert>}
 
             <form onSubmit={handleSubmit}>
                 <TextField fullWidth margin="normal" label="Name" name="name" value={formData.name} onChange={handleChange} required />
@@ -122,15 +132,8 @@ const SurvivorForm: React.FC = () => {
                     type="number"
                     value={formData.latitude}
                     onChange={handleChange}
-                    error={formData.latitude !== "" && (Number(formData.latitude) < -90 || Number(formData.latitude) > 90)}
-                    helperText={
-                        formData.latitude !== "" && (Number(formData.latitude) < -90 || Number(formData.latitude) > 90)
-                            ? "Latitude must be between -90 and 90"
-                            : ""
-                    }
                     required
                 />
-
                 <TextField
                     fullWidth
                     margin="normal"
@@ -139,12 +142,6 @@ const SurvivorForm: React.FC = () => {
                     type="number"
                     value={formData.longitude}
                     onChange={handleChange}
-                    error={formData.longitude !== "" && (Number(formData.longitude) < -180 || Number(formData.longitude) > 180)}
-                    helperText={
-                        formData.longitude !== "" && (Number(formData.longitude) < -180 || Number(formData.longitude) > 180)
-                            ? "Longitude must be between -180 and 180"
-                            : ""
-                    }
                     required
                 />
 
@@ -171,7 +168,14 @@ const SurvivorForm: React.FC = () => {
                     </Box>
                 )}
 
-                <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }} disabled={loading}>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    sx={{ mt: 2 }}
+                    disabled={loading || Object.keys(formData.inventory).length === 0}
+                >
                     {loading ? "Submitting..." : "Create Survivor"}
                 </Button>
             </form>
@@ -189,12 +193,7 @@ const SurvivorForm: React.FC = () => {
                                 <IconButton onClick={() => handleInventoryChange(name, -1)} disabled={!formData.inventory[name]}>
                                     <RemoveIcon />
                                 </IconButton>
-                                <TextField
-                                    type="number"
-                                    value={formData.inventory[name] || 0}
-                                    onChange={(e) => handleInventoryChange(name, Number(e.target.value) - (formData.inventory[name] || 0))}
-                                    inputProps={{ min: 0, style: { textAlign: "center", width: "50px" } }}
-                                />
+                                <TextField type="number" value={formData.inventory[name] || 0} />
                                 <IconButton onClick={() => handleInventoryChange(name, 1)}>
                                     <AddIcon />
                                 </IconButton>
