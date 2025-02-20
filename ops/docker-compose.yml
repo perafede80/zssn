@@ -73,10 +73,11 @@ services:
     networks:
       - zssn_network
     healthcheck:
-      test: ["CMD-SHELL", "curl --silent --fail http://localhost:3000 || { echo 'Frontend health check failed'; exit 1; }"]
+      test: ["CMD-SHELL", "curl --silent --fail http://zssn_frontend:3000 || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 3
+      start_period: 30s
 
 volumes:
   pgdata:
