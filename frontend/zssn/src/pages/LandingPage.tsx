@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Button, Typography, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 // import SurvivorMap from "../components/SurvivorMap";
-import "leaflet/dist/leaflet.css";
+// import "leaflet/dist/leaflet.css";
 
 const LandingPage: React.FC = () => {
     const navigate = useNavigate();
