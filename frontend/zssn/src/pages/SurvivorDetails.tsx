@@ -77,6 +77,16 @@ const SurvivorDetail: React.FC = () => {
                     </Button>
 
                     <Button
+                        variant="contained"
+                        color="success"
+                        fullWidth
+                        onClick={() => navigate("/trade", { state: { survivor } })}
+                        disabled={!survivor.inventory || survivor.inventory.length === 0}
+                    >
+                        Trade Items
+                    </Button>
+
+                    <Button
                         variant="outlined"
                         color="secondary"
                         fullWidth  
