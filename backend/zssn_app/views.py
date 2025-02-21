@@ -88,7 +88,6 @@ class SurvivorViewSet(viewsets.ModelViewSet):
         survivor_a = self.get_object()
 
         survivor_b_id = request.data.get('survivor_b_id')
-        survivor_b = Survivor.objects.get(id=survivor_b_id)
         items_a = request.data.get('items_a', {})
         items_b = request.data.get('items_b', {})
 
@@ -113,6 +112,7 @@ class SurvivorViewSet(viewsets.ModelViewSet):
             return Response({"error": "The trade is not balanced."},
                             status=status.HTTP_400_BAD_REQUEST)
 
+        print("perform the trade")
         # Perform the trade
         for item, amount in items_a.items():
             normalized_item = item.upper()  # Ensure case matches database values
