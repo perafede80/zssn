@@ -5,6 +5,8 @@ import SurvivorForm from "./components/SurvivorForm";
 import SurvivorList from "./components/SurvivorList";
 import SurvivorDetail from "./pages/SurvivorDetails";
 import UpdateLocation from "./pages/UpdateLocation";
+import TradePage from "./pages/TradePage";
+import TradeInterfacePage from "./pages/TradeInterfacePage";
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
         <Route path="/survivors" element={<SurvivorList />} />
         <Route path="/survivors/:id" element={<SurvivorDetail />} />
         <Route path="/update-location/:id" element={<UpdateLocation />} />
+        <Route path="/trade" element={<TradePage   />} />
+        <Route path="/trade/:id" element={<TradeInterfacePage />} />
       </Routes>
     </Router>
   );
