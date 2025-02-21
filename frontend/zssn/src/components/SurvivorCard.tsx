@@ -9,7 +9,6 @@ import {
     Chip,
     Stack,
 } from "@mui/material";
-import Grid from '@mui/material/Grid2';
 import PlaceIcon from '@mui/icons-material/Place';
 import { useNavigate } from "react-router-dom";
 import IconRenderer from "./IconRenderer";
