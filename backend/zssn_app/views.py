@@ -112,7 +112,6 @@ class SurvivorViewSet(viewsets.ModelViewSet):
             return Response({"error": "The trade is not balanced."},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        print("perform the trade")
         # Perform the trade
         for item, amount in items_a.items():
             normalized_item = item.upper()  # Ensure case matches database values
