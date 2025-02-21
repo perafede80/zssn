@@ -12,7 +12,7 @@ export interface Survivor {
     inventory?: InventoryItem[]; 
 }
 
-interface InventoryItem {
+export interface InventoryItem {
     item: string; 
     quantity: number;
 }
