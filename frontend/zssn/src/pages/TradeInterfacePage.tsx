@@ -52,8 +52,14 @@ const TradeInterfacePage: React.FC = () => {
     };
 
     const handleConfirmTrade = async () => {
+
+        if (!survivor?.id || !tradingWith?.id) {
+            console.error("Invalid survivor IDs for trading.");
+            return;
+        }
+
         try {
-            await survivorTradeItems(survivor?.id, tradingWith?.id, selectedItemsA, selectedItemsB);
+            await survivorTradeItems(survivor?.id.toString(), tradingWith?.id.toString(), selectedItemsA, selectedItemsB);
             alert('Trade successful!');
             navigate("/survivors/");
         } catch (error) {
