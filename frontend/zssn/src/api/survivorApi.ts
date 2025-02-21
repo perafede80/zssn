@@ -48,8 +48,8 @@ export interface TradeItems {
 }
 
 export const survivorTradeItems = async (
-    survivorAId: number,
-    survivorBId: number,
+    survivorAId: string,
+    survivorBId: string,
     itemsA: TradeItems,
     itemsB: TradeItems
 ) => {
@@ -71,4 +71,29 @@ export const survivorTradeItems = async (
     }
 
     return response.json();
+};
+
+export const reportSurvivor = async (
+    reportedId: string,
+    reporterID: string,
+    comments?: string
+) => {
+    const reportPayload = {
+        reporter_id: reporterID,
+        comments: comments
+    };
+
+    console.log("reporter id ", reporterID);
+
+    const response = await fetch(`http://localhost:8000/api/survivors/${reportedId}/report_infection/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reportPayload),
+    });
+
+    if (!response.ok) {
+        throw new Error("Report submission failed");
+    }
 };
