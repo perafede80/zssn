@@ -16,7 +16,7 @@ class SurvivorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Survivor
-        fields = ['id', 'name', 'age', 'gender', 'latitude', 'longitude', 'is_infected', 'inventory']
+        fields = ['id', 'name', 'age', 'gender', 'latitude', 'longitude', 'is_infected', 'reports_count', 'inventory']
         depth = 2
 
     def create(self, validated_data):
