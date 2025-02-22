@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 
 class SurvivorModelTest(TestCase):
     def setUp(self):
-        logger.info("\nSetting up SurvivorModelTest...")
         # Create a survivor
         self.survivor = Survivor.objects.create(
             name="John Doe",
@@ -29,7 +28,6 @@ class SurvivorModelTest(TestCase):
 
         for item_data in self.inventory_items:
             Inventory.objects.create(survivor=self.survivor, item=item_data["item"], quantity=item_data["quantity"])
-        logger.info("Completed setting up SurvivorModelTest.")
 
     def test_item_points(self):
         """Test the point value of items."""

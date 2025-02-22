@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 
 class ReportInfectionTest(TestCase):
     def setUp(self):
-        logger.info("\nSetting up ReportInfectionTest...")
         self.client = APIClient()
 
         # Create the target survivor (to be reported)
@@ -57,7 +56,6 @@ class ReportInfectionTest(TestCase):
             Inventory.objects.create(survivor=self.reporter_1, item=item_data["item"], quantity=item_data["quantity"])
             Inventory.objects.create(survivor=self.reporter_2, item=item_data["item"], quantity=item_data["quantity"])
             Inventory.objects.create(survivor=self.reporter_3, item=item_data["item"], quantity=item_data["quantity"])
-        logger.info("Completed setting up ReportInfectionTest.")
 
     def test_report_infection(self):
         logger.info("\n***** Test successful report of a infected survivor *****")
