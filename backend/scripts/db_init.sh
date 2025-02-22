@@ -10,6 +10,3 @@ psql -c "DROP DATABASE IF EXISTS zssn"
 
 # Create the database
 psql -c "CREATE DATABASE zssn"
-
-# Create the extension in the newly created database
-psql -d zssn -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
