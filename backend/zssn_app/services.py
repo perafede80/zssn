@@ -1,5 +1,7 @@
 import logging
+from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework.exceptions import ValidationError
+from django.db import transaction
 from .models import Survivor, Inventory, Item
 from .constants import REPORTS_TO_MARK_INFECTED
 
@@ -12,10 +14,14 @@ class SurvivorService:
         logger.debug(f"Updating location for survivor {survivor.id} to latitude: {latitude}, longitude: {longitude}")
         survivor.latitude = latitude
         survivor.longitude = longitude
-        survivor.full_clean()
-        survivor.save()
-        logger.info(f"Updated location for survivor {survivor.id}")
-        return survivor
+        try:
+            survivor.full_clean()
+            survivor.save()
+            logger.info(f"Updated location for survivor {survivor.id}")
+            return survivor
+        except DjangoValidationError as e:
+            logger.error(f"Validation error while updating location for survivor {survivor.id}: {e}")
+            raise ValidationError(e)
 
     def report_infection(self, survivor, reporter_id):
         logger.debug(f"Reporting infection for survivor {survivor.id} by reporter {reporter_id}")
@@ -56,8 +62,8 @@ class TradeService:
             logger.warning("Trade restriction: One of the traders is infected.")
             return "One of the traders is infected."
 
-        points_a = self.calculate_trade_points(self.items_to_trade_from_a)
-        points_b = self.calculate_trade_points(self.items_to_trade_from_b)
+        points_a = Inventory.calculate_total_worth(self.items_to_trade_from_a)
+        points_b = Inventory.calculate_total_worth(self.items_to_trade_from_b)
 
         if points_a != points_b:
             logger.warning("Trade restriction: The trade is not balanced.")
@@ -69,11 +75,6 @@ class TradeService:
 
         return None
 
-    def calculate_trade_points(self, items):
-        return sum(items.get(item, 0) * price for item, price in {
-            'WATER': 4, 'FOOD': 3, 'MEDICATION': 2, 'AMMUNITION': 1
-        }.items())
-
     def execute_trade(self):
         restriction = self.get_trade_restriction()
         if restriction:
@@ -82,25 +83,35 @@ class TradeService:
 
         logger.debug(f"Executing trade between survivor {self.survivor_a.id} and survivor {self.survivor_b.id}")
 
-        for item, amount in self.items_to_trade_from_a.items():
-            normalized_item = item.upper()
-            inventory_entry_a = Inventory.objects.get(survivor=self.survivor_a, item=normalized_item)
-            inventory_entry_a.quantity -= amount
-            inventory_entry_a.save()
-
-            inventory_entry_b = Inventory.objects.get(survivor=self.survivor_b, item=normalized_item)
-            inventory_entry_b.quantity += amount
-            inventory_entry_b.save()
-
-        for item, amount in self.items_to_trade_from_b.items():
-            normalized_item = item.upper()
-            inventory_entry_b = Inventory.objects.get(survivor=self.survivor_b, item=normalized_item)
-            inventory_entry_b.quantity -= amount
-            inventory_entry_b.save()
-
-            inventory_entry_a = Inventory.objects.get(survivor=self.survivor_a, item=normalized_item)
-            inventory_entry_a.quantity += amount
-            inventory_entry_a.save()
+        with transaction.atomic():
+            self._transfer_items(self.survivor_a, self.survivor_b, self.items_to_trade_from_a)
+            self._transfer_items(self.survivor_b, self.survivor_a, self.items_to_trade_from_b)
 
         logger.info(f"Trade executed successfully between survivor {self.survivor_a.id} and survivor {self.survivor_b.id}")
         return True
+
+    def _transfer_items(self, from_survivor, to_survivor, items):
+        """
+        Transfer items from one survivor to another.
+
+        :param items: A dictionary with item names as keys and quantities as values.
+        """
+        for item, quantity in items.items():
+            normalized_item_name = item.strip().upper()
+            try:
+                from_inventory = Inventory.objects.get(survivor=from_survivor, item=normalized_item_name)
+            except Inventory.DoesNotExist:
+                logger.error(f"Inventory item '{normalized_item_name}' does not exist for survivor {from_survivor.id}")
+                raise ValidationError(f"Inventory item '{normalized_item_name}' does not exist for survivor {from_survivor.id}")
+
+            to_inventory, created = Inventory.objects.get_or_create(survivor=to_survivor, item=normalized_item_name, defaults={'quantity': 0})
+
+            if from_inventory.quantity < quantity:
+                logger.error(f"Insufficient quantity of {normalized_item_name} for survivor {from_survivor.id}")
+                raise ValidationError(f"Insufficient quantity of {normalized_item_name} for survivor {from_survivor.id}")
+
+            from_inventory.quantity -= quantity
+            to_inventory.quantity += quantity
+
+            from_inventory.save()
+            to_inventory.save()
