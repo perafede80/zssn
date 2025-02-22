@@ -43,15 +43,6 @@ class Survivor(models.Model):
         """
         return {inv.item: inv.quantity for inv in self.inventory.all()}
 
-    def calculate_inventory_value(self):
-        """
-        Calculates the total value of the survivor's inventory based on item points.
-        """
-        total_points = 0
-        for item in self.inventory.all():
-            total_points += Item.get_points(item.item) * item.quantity
-        return total_points
-
 
 class Item(models.TextChoices):
     WATER = 'WATER', 'Water - 4 points'
@@ -82,3 +73,15 @@ class Inventory(models.Model):
 
     def __str__(self):
         return f"Inventory ID: {self.id} - {self.item} ({self.quantity})"
+
+    @classmethod
+    def calculate_total_worth(cls, items):
+        """
+        Calculate the total worth of a set of items.
+        :param items: A dictionary with item names as keys and quantities as values.
+        :return: The total worth of the items.
+        """
+        total_worth = 0
+        for item_name, quantity in items.items():
+            total_worth += Item.get_points(item_name) * quantity
+        return total_worth
