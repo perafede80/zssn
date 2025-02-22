@@ -43,6 +43,15 @@ class Survivor(models.Model):
         """
         return {inv.item: inv.quantity for inv in self.inventory.all()}
 
+    def calculate_inventory_value(self):
+        """
+        Calculates the total value of the survivor's inventory based on item points.
+        """
+        total_points = 0
+        for item in self.inventory.all():
+            total_points += Item.get_points(item.item) * item.quantity
+        return total_points
+
 
 class Item(models.TextChoices):
     WATER = 'WATER', 'Water - 4 points'
@@ -61,16 +70,6 @@ class Item(models.TextChoices):
         }
         return points_map.get(item_name, 0)
 
-def calculate_total_points(survivor):
-    total_points = 0
-    for item in survivor.inventory.all():
-        total_points += Item.get_points(item.item) * item.quantity
-    return total_points
-
-def check_inventory_value(survivor):
-    total_points = calculate_total_points(survivor)
-    print(f"{survivor.name}'s inventory is worth {total_points} points.")
-
 
 class Inventory(models.Model):
     survivor = models.ForeignKey(Survivor, related_name='inventory', on_delete=models.CASCADE)
@@ -82,5 +81,4 @@ class Inventory(models.Model):
         verbose_name = "Inventory"
 
     def __str__(self):
-        return f"{self.survivor.name} - {self.item} ({self.quantity})"
-
+        return f"Inventory ID: {self.id} - {self.item} ({self.quantity})"
