@@ -6,8 +6,10 @@ from zssn_app.models import Survivor, Inventory, Item
 # Create a logger instance
 logger = logging.getLogger(__name__)
 
+
 class ReportInfectionTest(TestCase):
     def setUp(self):
+        logger.info("\nSetting up ReportInfectionTest...")
         self.client = APIClient()
 
         # Create the target survivor (to be reported)
@@ -55,9 +57,10 @@ class ReportInfectionTest(TestCase):
             Inventory.objects.create(survivor=self.reporter_1, item=item_data["item"], quantity=item_data["quantity"])
             Inventory.objects.create(survivor=self.reporter_2, item=item_data["item"], quantity=item_data["quantity"])
             Inventory.objects.create(survivor=self.reporter_3, item=item_data["item"], quantity=item_data["quantity"])
+        logger.info("Completed setting up ReportInfectionTest.")
 
     def test_report_infection(self):
-        logger.info("***** Test successful report of a infected survivor *****")
+        logger.info("\n***** Test successful report of a infected survivor *****")
         url = f'/api/survivors/{self.target_survivor.id}/report_infection/'
 
         # Reporter 1 reports the target survivor
@@ -109,7 +112,7 @@ class ReportInfectionTest(TestCase):
         )
 
     def test_cannot_report_themselves(self):
-        logger.info("***** Test that survivors cannot report themselves *****")
+        logger.info("\n***** Test that survivors cannot report themselves *****")
         url = f'/api/survivors/{self.target_survivor.id}/report_infection/'
         data = {'reporter_id': self.target_survivor.id}
         response = self.client.post(url, data, format='json')
@@ -126,7 +129,7 @@ class ReportInfectionTest(TestCase):
         )
 
     def test_invalid_reporter(self):
-        logger.info("***** Test that only reporters in the db can create a report *****")
+        logger.info("\n***** Test that only reporters in the db can create a report *****")
         url = f'/api/survivors/{self.target_survivor.id}/report_infection/'
         data = {'reporter_id': 9999}
         response = self.client.post(url, data, format='json')
