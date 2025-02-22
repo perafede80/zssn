@@ -102,7 +102,8 @@ class SurvivorViewSet(viewsets.ModelViewSet):
             trade_service.execute_trade()
         except ValidationError as e:
             logger.error(f"Trade execution error: {e}")
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_ERROR)
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
         logger.info(f"Trade successful between survivor {survivor_a.id} and survivor {survivor_b_id}")
         return Response({"message": "Trade successful."}, status=status.HTTP_200_OK)
