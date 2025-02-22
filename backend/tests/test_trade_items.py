@@ -2,7 +2,7 @@ import logging
 from django.test import TestCase
 from rest_framework.test import APIClient
 from zssn_app.models import Survivor, Inventory, Item
-
+from .helper import create_survivor_with_specific_inventory
 # Configure logging
 logger = logging.getLogger(__name__)
 
@@ -12,46 +12,12 @@ class TradeSurvivorsTest(TestCase):
         self.client = APIClient()
 
         # Create two survivors with inventories
-        self.survivor_a = Survivor.objects.create(
-            name="John Doe",
-            age=25,
-            gender="M",
-            latitude=40.7128,
-            longitude=-74.0060,
-            is_infected=False
-        )
+        self.survivor_a = create_survivor_with_specific_inventory(water_qty=2, food_qty=3, medication_qty=1, ammunition_qty=5)
 
-        self.survivor_b = Survivor.objects.create(
-            name="Jane Smith",
-            age=30,
-            gender="F",
-            latitude=34.0522,
-            longitude=-118.2437,
-            is_infected=False
-        )
+        self.survivor_b = create_survivor_with_specific_inventory(water_qty=2, food_qty=3, medication_qty=1, ammunition_qty=5)
 
         # Create an infected survivor
-        self.survivor_c = Survivor.objects.create(
-            name="Mike Johnson",
-            age=40,
-            gender="M",
-            latitude=51.5074,
-            longitude=-0.1278,
-            is_infected=True  # Marked as infected
-        )
-
-        # Populate the survivors' inventories
-        self.inventory_items = [
-            {"item": Item.WATER, "quantity": 2},
-            {"item": Item.FOOD, "quantity": 3},
-            {"item": Item.MEDICATION, "quantity": 1},
-            {"item": Item.AMMUNITION, "quantity": 5},
-        ]
-
-        for item_data in self.inventory_items:
-            Inventory.objects.create(survivor=self.survivor_a, item=item_data["item"], quantity=item_data["quantity"])
-            Inventory.objects.create(survivor=self.survivor_b, item=item_data["item"], quantity=item_data["quantity"])
-            Inventory.objects.create(survivor=self.survivor_c, item=item_data["item"], quantity=item_data["quantity"])
+        self.survivor_c = create_survivor_with_specific_inventory(is_infected=True,water_qty=2, food_qty=3, medication_qty=1, ammunition_qty=5 )
 
     def test_valid_trade(self):
         """Test a valid trade between two survivors."""
@@ -69,10 +35,10 @@ class TradeSurvivorsTest(TestCase):
 
         # Ensure the trade is within the available inventory
         if (
-                inventory_a.get("WATER", 0) >= data["items_from_a"].get("WATER", 0) and
-                inventory_a.get("FOOD", 0) >= data["items_from_a"].get("FOOD", 0) and
-                inventory_b.get("MEDICATION", 0) >= data["items_from_b"].get("MEDICATION", 0) and
-                inventory_b.get("AMMUNITION", 0) >= data["items_from_b"].get("AMMUNITION", 0)
+            inventory_a.get("WATER", 0) >= data["items_from_a"].get("WATER", 0) and
+            inventory_a.get("FOOD", 0) >= data["items_from_a"].get("FOOD", 0) and
+            inventory_b.get("MEDICATION", 0) >= data["items_from_b"].get("MEDICATION", 0) and
+            inventory_b.get("AMMUNITION", 0) >= data["items_from_b"].get("AMMUNITION", 0)
         ):
             response = self.client.post(url, data, format='json')
             self.assertEqual(response.status_code, 200)
@@ -134,7 +100,7 @@ class TradeSurvivorsTest(TestCase):
             "items_from_a": {"WATER": 1},
             "items_from_b": {"AMMUNITION": 4}
         }
-
+        logger.info(f"survivor c is infected {self.survivor_c.is_infected}")
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data["error"], "One of the traders is infected.")

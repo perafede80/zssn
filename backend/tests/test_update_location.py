@@ -2,6 +2,7 @@ import logging
 from django.test import TestCase
 from rest_framework.test import APIClient
 from zssn_app.models import Survivor, Item, Inventory
+from .helper import create_survivor_with_inventory
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -10,24 +11,7 @@ logger = logging.getLogger(__name__)
 class UpdateSurvivorLocationTest(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.survivor = Survivor.objects.create(
-            name="John Doe",
-            age=25,
-            gender="M",
-            latitude=40.7128,
-            longitude=-74.0060
-        )
-
-        # Populate the survivor's inventory
-        self.inventory_items = [
-            {"item": Item.WATER, "quantity": 2},
-            {"item": Item.FOOD, "quantity": 3},
-            {"item": Item.MEDICATION, "quantity": 1},
-            {"item": Item.AMMUNITION, "quantity": 5},
-        ]
-
-        for item_data in self.inventory_items:
-            Inventory.objects.create(survivor=self.survivor, item=item_data["item"], quantity=item_data["quantity"])
+        self.survivor = create_survivor_with_inventory(latitude=40.7128, longitude=-74.0060)
 
     def test_update_location(self):
         """Update the location with an allowed latitude and longitude"""
