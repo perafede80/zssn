@@ -55,10 +55,10 @@ export const survivorTradeItems = async (
 ) => {
     const tradePayload = {
         survivor_b_id: survivorBId,
-        items_a: itemsA,
-        items_b: itemsB,
+        items_from_a: itemsA,
+        items_from_b: itemsB,
     };
-    const response = await fetch(`http://localhost:8000/api/survivors/${survivorAId}/trade/`, {
+    const response = await fetch(`http://localhost:8000/api/survivors/${survivorAId}/trade_items/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
