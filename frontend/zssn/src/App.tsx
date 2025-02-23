@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import SurvivorForm from "./components/SurvivorForm";
 import SurvivorList from "./components/SurvivorList";
@@ -12,7 +12,7 @@ import ReportPage from "./pages/ReportPage";
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/survivors" element={<SurvivorList />} />
@@ -24,7 +24,7 @@ function App() {
         <Route path="/report/:id" element={<ReportPage />} />
         <Route path="/create-survivor" element={<SurvivorForm />} />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 
