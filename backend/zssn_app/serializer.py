@@ -19,6 +19,12 @@ class SurvivorSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'age', 'gender', 'latitude', 'longitude', 'is_infected', 'reports_count', 'inventory']
         depth = 2
 
+    def validate_inventory(self, value):
+        """Ensure at least one inventory item exists."""
+        if not value or len(value) == 0:
+            raise serializers.ValidationError("Survivor must have at least one inventory item.")
+        return value
+
     def create(self, validated_data):
         inventory_data = validated_data.pop("inventory")
         survivor = Survivor.objects.create(**validated_data)
