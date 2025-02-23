@@ -14,20 +14,17 @@ import {
     IconButton,
 } from "@mui/material";
 import InventoryIcon from "@mui/icons-material/Inventory";
-import WaterDropIcon from "@mui/icons-material/Opacity";
-import FastfoodIcon from "@mui/icons-material/Fastfood";
-import LocalPharmacyIcon from "@mui/icons-material/LocalPharmacy";
-import SportsMmaIcon from "@mui/icons-material/SportsMma";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { useNavigate } from "react-router-dom";
+import IconRenderer from "./IconRenderer";
+import { useNavigate } from "react-router";
 
 // Define inventory items with Material UI icons
 const inventoryItems = [
-    { name: "Water", icon: <WaterDropIcon /> },
-    { name: "Food", icon: <FastfoodIcon /> },
-    { name: "Medication", icon: <LocalPharmacyIcon /> },
-    { name: "Ammunition", icon: <SportsMmaIcon /> },
+    { name: "Water", icon: <IconRenderer item="Water"/> },
+    { name: "Food", icon: <IconRenderer item="Food"/> },
+    { name: "Medication", icon: <IconRenderer item="Medication"/> },
+    { name: "Ammunition", icon: <IconRenderer item="Ammunition"/> },
 ];
 
 const SurvivorForm: React.FC = () => {
@@ -62,12 +59,12 @@ const SurvivorForm: React.FC = () => {
             const newInventory = { ...prevData.inventory };
             newInventory[item] = (newInventory[item] || 0) + change;
             if (newInventory[item] <= 0) {
-                delete newInventory[item]; // Remove item if zero
+                delete newInventory[item]; 
             }
             return { ...prevData, inventory: newInventory };
         });
 
-        setInventoryError(false); // ✅ Reset error when inventory is updated
+        setInventoryError(false); 
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -100,7 +97,7 @@ const SurvivorForm: React.FC = () => {
 
             setSuccess(true);
             setFormData({ name: "", age: "", gender: "", latitude: "", longitude: "", inventory: {} });
-            navigate("/survivors"); // ✅ Redirect after successful creation
+            navigate("/survivors"); 
         } catch (err) {
             setError((err as Error).message);
         } finally {

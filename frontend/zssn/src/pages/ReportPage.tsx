@@ -40,7 +40,14 @@ const ReportPage: React.FC = () => {
                 onChange={(e) => setComments(e.target.value)}
                 sx={{ mb: 2 }}
             />
-            <Button variant="contained" color="primary" fullWidth onClick={handleSubmit}>Submit Report</Button>
+            <Button 
+                variant="contained" 
+                color="primary" 
+                fullWidth 
+                onClick={handleSubmit}
+            >
+            Submit Report
+            </Button>
         </Box>
     );
 };
