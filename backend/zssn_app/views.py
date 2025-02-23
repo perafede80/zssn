@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from .services import SurvivorService, TradeService
 from django.core.exceptions import ValidationError as DjangoValidationError
-# Configure logging
+
 logger = logging.getLogger(__name__)
 
 def health_check(request):
@@ -17,7 +17,7 @@ def health_check(request):
 
 
 class SurvivorViewSet(viewsets.ModelViewSet):
-    queryset = Survivor.objects.filter(is_infected=False)  # Exclude infected survivors
+    queryset = Survivor.objects.filter(is_infected=False) 
     serializer_class = SurvivorSerializer
     survivor_service = SurvivorService()
 
