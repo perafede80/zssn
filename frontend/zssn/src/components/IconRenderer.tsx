@@ -11,44 +11,45 @@ import { SxProps } from '@mui/material/styles';
 interface IconRendererProps {
     gender?: string;
     item?: string;
+    sx?: SxProps;  // Allow passing custom styles
 }
 
-const IconRenderer: React.FC<IconRendererProps> = ({ gender, item }) => {
+const IconRenderer: React.FC<IconRendererProps> = ({ gender, item, sx }) => {
     let IconComponent: React.ElementType | null = null;
-    let sx: SxProps | null = null;
+    let defaultSx: SxProps = {};
 
     if (gender) {
         switch (gender) {
             case 'M':
                 IconComponent = MaleIcon;
-                sx = { color: '#1976D2' };
+                defaultSx = { color: '#1976D2' };
                 break;
             case 'F':
                 IconComponent = FemaleIcon;
-                sx = { color: '#E91E63' };
+                defaultSx = { color: '#E91E63' };
                 break;
             case 'O':
                 IconComponent = TransgenderIcon;
-                sx = { color: '#9C27B0' };
+                defaultSx = { color: '#9C27B0' };
                 break;
         }
     } else if (item) {
         switch (item.toUpperCase()) {
             case 'WATER':
                 IconComponent = WaterDropIcon;
-                sx = { color: '#03A9F4' };
+                defaultSx = { color: '#03A9F4' };
                 break;
             case 'FOOD':
                 IconComponent = FastfoodIcon;
-                sx = { color: '#FF9800' };
+                defaultSx = { color: '#FF9800' };
                 break;
             case 'MEDICATION':
                 IconComponent = LocalPharmacyIcon;
-                sx = { color: '#4CAF50' };
+                defaultSx = { color: '#4CAF50' };
                 break;
             case 'AMMUNITION':
                 IconComponent = SportsMmaIcon;
-                sx = { color: '#795548' };
+                defaultSx = { color: '#795548' };
                 break;
         }
     }
@@ -57,7 +58,10 @@ const IconRenderer: React.FC<IconRendererProps> = ({ gender, item }) => {
         return null; // Or a default icon
     }
 
-    return <IconComponent sx={sx} />;
+    // Merge default and custom styles
+    const mergedSx = { ...defaultSx, ...sx };
+
+    return <IconComponent sx={mergedSx} />;
 };
 
 export default IconRenderer;
