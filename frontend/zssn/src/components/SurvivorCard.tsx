@@ -7,9 +7,9 @@ import {
     Button,
     Box,
     Chip,
-    Stack,
 } from "@mui/material";
 import PlaceIcon from '@mui/icons-material/Place';
+import SwitchAccountIcon from '@mui/icons-material/SwitchAccount';
 import { useNavigate } from "react-router-dom";
 import IconRenderer from "./IconRenderer";
 
@@ -21,24 +21,22 @@ const SurvivorCard: React.FC<SurvivorCardProps> = ({ survivor }) => {
     const navigate = useNavigate();
 
     return (
-        <Card sx={{ borderRadius: 3, boxShadow: 3, p: 2, mb: 2 }}>
+        <Card sx={{ borderRadius: 3, boxShadow: 3, p: 2, mb: 2, height: 350, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <CardContent>
                 {/* Name */}
-                <Typography variant="h5" fontWeight="bold">
+                <Typography variant="h5" fontWeight="bold" align="center">
                     {survivor.name}
                 </Typography>
 
                 {/* Gender + Age */}
-                <Typography variant="subtitle1">
+                <Typography variant="body2" sx={{ mt: 1, textAlign: 'center' }}>
                     <IconRenderer gender={survivor.gender} /> Age: {survivor.age}
                 </Typography>
 
                 {/* Location */}
-                <Box display="flex" alignItems="center">
-                    <PlaceIcon sx={{ color: "#D32F2F", mr: 1 }} />
-                    <Typography variant="subtitle1">
-                        {survivor.latitude}, {survivor.longitude}
-                    </Typography>
+                <Box display="flex" justifyContent="center" alignItems="center" sx={{ mt: 1 }}>
+                    <PlaceIcon sx={{ color: "#D32F2F", mr: 0.5 }} />
+                    <Typography variant="body2">{survivor.latitude}, {survivor.longitude}</Typography>
                 </Box>
 
                 {/* Inventory Section */}
@@ -46,31 +44,32 @@ const SurvivorCard: React.FC<SurvivorCardProps> = ({ survivor }) => {
                     Inventory:
                 </Typography>
                 {survivor.inventory && survivor.inventory.length > 0 ? (
-                    <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap', mt: 1 }}>
                         {survivor.inventory.map((item, index) => (
                             <Chip
                                 key={index}
-                                label={`${item.quantity}`}
+                                label={item.quantity}
                                 icon={<IconRenderer item={item.item} />}
-                                sx={{ fontWeight: "bold" }}
+                                sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}
                             />
                         ))}
-                    </Stack>
+                    </Box>
                 ) : (
                     <Typography color="textSecondary">No inventory available.</Typography>
                 )}
-
-                {/* View Details Button */}
-                <Button
-                    variant="contained"
-                    fullWidth
-                    sx={{ mt: 2, borderRadius: 2 }}
-                    onClick={() => navigate(`/survivors/${survivor.id}`, { state: { survivor } })}
-                >
-                    🔍 View Details
-                </Button>
             </CardContent>
+
+            <Button
+                variant="contained"
+                fullWidth
+                sx={{ mt: 2, borderRadius: 2 }}
+                onClick={() => navigate(`/survivors/${survivor.id}`, { state: { survivor } })}
+                startIcon={<SwitchAccountIcon />}
+            >
+                Play as Survivor
+            </Button>
         </Card>
+
     );
 };
 
