@@ -40,7 +40,7 @@ class SurvivorSerializer(serializers.ModelSerializer):
         Update a Survivor's details, but do not allow direct updates to the inventory.
         """
         # Ensure the 'inventory' field is not updated directly
-        validated_data.pop('inventory', None)  # Remove 'inventory' from validated_data
+        validated_data.pop('inventory', None)
 
         # Update the Survivor instance
         for attr, value in validated_data.items():
