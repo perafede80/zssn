@@ -2,6 +2,7 @@ import logging
 from django.test import TestCase
 from rest_framework.test import APIClient
 from zssn_app.models import Survivor, Inventory, Item
+from .helper import create_survivor_with_inventory
 
 # Create a logger instance
 logger = logging.getLogger(__name__)
@@ -12,50 +13,12 @@ class ReportInfectionTest(TestCase):
         self.client = APIClient()
 
         # Create the target survivor (to be reported)
-        self.target_survivor = Survivor.objects.create(
-            name="John Doe",
-            age=25,
-            gender="M",
-            latitude=40.7128,
-            longitude=-74.0060
-        )
+        self.target_survivor = create_survivor_with_inventory(is_infected=False)
 
         # Create three reporting survivors
-        self.reporter_1 = Survivor.objects.create(
-            name="Reporter 1",
-            age=30,
-            gender="F",
-            latitude=34.0522,
-            longitude=-118.2437
-        )
-        self.reporter_2 = Survivor.objects.create(
-            name="Reporter 2",
-            age=35,
-            gender="M",
-            latitude=36.1699,
-            longitude=-115.1398
-        )
-        self.reporter_3 = Survivor.objects.create(
-            name="Reporter 3",
-            age=40,
-            gender="F",
-            latitude=37.7749,
-            longitude=-122.4194
-        )
-
-        # Populate the inventory for each survivor
-        self.inventory_items = [
-            {"item": Item.WATER, "quantity": 2},
-            {"item": Item.FOOD, "quantity": 3},
-            {"item": Item.MEDICATION, "quantity": 1},
-            {"item": Item.AMMUNITION, "quantity": 5},
-        ]
-
-        for item_data in self.inventory_items:
-            Inventory.objects.create(survivor=self.target_survivor, item=item_data["item"], quantity=item_data["quantity"])
-            Inventory.objects.create(survivor=self.reporter_1, item=item_data["item"], quantity=item_data["quantity"])
-            Inventory.objects.create(survivor=self.reporter_2, item=item_data["item"], quantity=item_data["quantity"])
-            Inventory.objects.create(survivor=self.reporter_3, item=item_data["item"], quantity=item_data["quantity"])
+        self.reporter_1 = create_survivor_with_inventory(is_infected=False)
+        self.reporter_2 = create_survivor_with_inventory(is_infected=False)
+        self.reporter_3 = create_survivor_with_inventory(is_infected=False)
 
     def test_report_infection(self):
         logger.info("\n***** Test successful report of a infected survivor *****")
