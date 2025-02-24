@@ -1,6 +1,6 @@
 export enum InventoryItem {
-    Water = "WATER",
-    Food = "FOOD",
-    Medication = "MEDICATION",
-    Ammunition = "AMMUNITION"
+    Water = "Water",
+    Food = "Food",
+    Medication = "Medication",
+    Ammunition = "Ammunition"
 }
