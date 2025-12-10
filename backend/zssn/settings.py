@@ -17,17 +17,13 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-16xu%_cw-m75z#+jkg!k-m1+g^b!6nal^wkd^jtw626593w4p!')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+# Casts the environment variable to a boolean
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-16xu%_cw-m75z#+jkg!k-m1+g^b!6nal^wkd^jtw626593w4p!'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+# Safe one-liner: Defaults to localhost, splits by space
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1 [::1]').split(' ')
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
