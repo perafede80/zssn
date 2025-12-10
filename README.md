@@ -1,108 +1,103 @@
-# ZSSN Application
+# Survivor Inventory System (ZSSN)
 
-This repository contains the full-stack application for the ZSSN (Zombie Survival Social Network) coding test.
+This repository contains a full-stack application for the **Zombie Survival Social Network (ZSSN)** coding challenge. It demonstrates a production-ready architecture for managing inventory and resources in a distributed network.
 
-## Project Structure
+## 🚀 Tech Stack
 
-- `backend/`: Django backend API.
-- `frontend/`: React frontend application.
-- `ops/`: Docker configuration for deployment.
+* **Backend:** Python 3.11, Django 5, Django REST Framework
+* **Frontend:** React 19, TypeScript, Material UI, Vite (Rsbuild)
+* **Database:** PostgreSQL 16
+* ** Infrastructure:** Docker, Docker Compose
+* **Testing:** Pytest (Backend), Vitest (Frontend), Cypress (E2E)
+* **Code Quality:** Ruff, Biome, Pre-commit hooks
 
-## Prerequisites
+## 🛠️ Prerequisites
 
-- Docker and Docker Compose installed on your machine.
+* Docker and Docker Compose installed on your machine.
+* Git
 
-## Getting Started
+## 🏁 Getting Started
 
-1. Clone the repository:
+1.  **Clone the repository:**
    ```bash
    git clone git@github.com:perafede80/zssn.git
    cd zssn
-   ```
+    ```
 
-2. Start the application using Docker: 
-   ```bash
-   docker-compose up --build
-   ```
+2.  **Configuration (Optional):**
+    The project comes with safe defaults for local development. For custom settings, copy the example environment file:
+    ```bash
+    cp ops/.env.example ops/.env
+    ```
 
-3. Access the application at:
-   ```bash
-   http://localhost:3000
-   ```
-   Ensure the application renders properly on `localhost:3000`.
+3.  **Start the Application:**
+    Run the application stack using Docker Compose:
+    ```bash
+    docker-compose -f ops/docker-compose.yml up --build -d
+    ```
 
-## Docker Compose Overview
+4.  **Access the Services:**
+    * **Frontend:** [http://localhost:3000](http://localhost:3000)
+    * **Backend API:** [http://localhost:8000/api/](http://localhost:8000/api/)
+    * **Database Admin (Adminer):** [http://localhost:8080](http://localhost:8080) (Server: `db`, User: `zssn_user`, Pass: `zssn_password`)
 
-The `docker-compose.yml` file orchestrates the multi-container application. Here's a brief overview of the services:
+## 🏗️ Architecture
 
-### Database (PostgreSQL)
-- Runs PostgreSQL 16 with persistent storage.
-- Executes initialization scripts from `backend/scripts`.
-- Health checks ensure the database is ready before other services start.
+The project follows a modular **Model-View-Template (MVT)** pattern on the backend and a component-based architecture on the frontend.
 
-### Adminer (Database UI)
-- A lightweight web interface for managing the PostgreSQL database.
-- Accessible at `http://localhost:8080` with the default server set to `db`.
+* **Backend:** Exposes a RESTful API for managing Survivors, Inventory, and Trade transactions. It enforces strict validation rules (e.g., ensuring trades are balanced).
+* **Frontend:** A responsive React application that consumes the API. It allows users to view survivors, update locations, and perform trades.
+* **Database:** PostgreSQL is used for persistent storage, with a normalized schema for Survivors and Inventory.
 
-### Backend (Django API)
-- Builds the Django API, exposing it on port `8000`.
-- Live code updates are enabled via volume mounting.
-- Health checks confirm the API is responsive.
-
-### Frontend (React App)
-- Builds and serves the React app on port `3000`.
-- Volume mounting allows live updates during development.
-- Health checks ensure the UI is running properly.
-
-## Backend Architecture
-
-The project's architecture follows the **Model-View-Template (MVT)** pattern, typical of Django applications.
-
-### Models
-The `models.py` defines the essential data structures, including:
-- **Survivor:** Stores information about each survivor (e.g., name, age, location, infection status).
-- **Item:** Enum-based representation of possible inventory items (e.g., Water, Food, Medication, Ammunition).
-- **Inventory:** Tracks the quantity of specific items in a survivor's possession.
-
-### Views
-Handles the logic for all survivor and inventory-related functionality. Survivors can be added, updated, and marked as infected. APIs and endpoints serve application requests.
-
-### Templates
-Used to render the frontend interface for any server-side rendered views, though the primary frontend is built with React.
-
-### Management Commands (Custom Scripts)
-Custom Django commands, such as the `seed_db` script, allow for easy population of the database with test data.
-
-To seed the database, run:
+### Database Seeding
+To populate the database with random test data (Survivors and Inventory items), run:
 ```bash
 docker exec zssn_backend python manage.py seed_db
 ```
-This will:
-- Add 10 survivors to the database, each with random attributes.
-- Assign random inventory items (e.g., Food, Water) to each survivor, ensuring no duplicate items for the same survivor.
+Understood. Here is the **complete, finalized `README.md`** file.
 
-### Database
-The app relies on **Django ORM** for database operations, using **PostgreSQL** as the database. Most database actions, such as adding, updating, and querying, are abstracted using ORM models.
+You can copy and paste this entire block directly into your file. It includes the **Quality Assurance** section you need, the corrected git clone command, and the Credits section.
 
-## Frontend
+## ✅ Quality Assurance & Testing
 
-The frontend is built using React, TypeScript, and Material-UI. It provides an intuitive interface for interacting with the backend APIs.
+The project employs a comprehensive testing strategy isolated in a separate Docker ecosystem.
 
-## Running Tests
+**Note:** Ensure the main application is running (`docker-compose up`) before running tests, as the test containers attach to the `zssn_network`.
 
-To run the backend tests, use:
+### 1\. Run All Tests
+
+Execute the full suite (Backend, Frontend Unit, and End-to-End):
+
 ```bash
-docker exec zssn_backend python manage.py test
+docker-compose -f ops/docker-compose.tests.yml up --build --abort-on-container-exit
 ```
 
-### Frontend Tests
-Apologies, but there are currently no frontend tests, as I wasn't able to make Jest work.
+### 2\. Run Specific Suites
 
-## Improvements
+  * **Backend Tests (Pytest + Coverage):**
 
-Future improvements for the project include:
-1. **Testing:** Add Jest tests for the frontend.
-2. **Linting:** Implement linters for both backend and frontend.
-3. **Interactive Map:** Integrate Leaflet.js to display survivor locations and allow user interaction with the map.
-4. **End-to-End Testing:** Add Cypress for comprehensive end-to-end testing.
+    ```bash
+    docker-compose -f ops/docker-compose.tests.yml up --build backend-tests
+    ```
 
+    *Checks model integrity, trade logic validation, and API response codes.*
+
+  * **Frontend Unit Tests (Vitest):**
+
+    ```bash
+    docker-compose -f ops/docker-compose.tests.yml up --build frontend-tests
+    ```
+
+    *Tests React components, hooks, and utility functions.*
+
+  * **End-to-End Tests (Cypress):**
+
+    ```bash
+    docker-compose -f ops/docker-compose.tests.yml up --build cypress
+    ```
+
+    *Simulates real user interactions like navigating pages and verifying content.*
+
+## 🤝 Credits
+
+  * **Icons:** Zombie/Biohazard icons designed by [brgfx / Freepik](http://www.freepik.com).
