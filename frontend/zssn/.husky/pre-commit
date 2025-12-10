@@ -1,0 +1,2 @@
+cd frontend/zssn && npx biome check --write
+docker exec zssn_backend python -m ruff check . --fix

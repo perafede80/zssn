@@ -1,7 +1,8 @@
 import logging
+
 from django.test import TestCase
 from rest_framework.test import APIClient
-from zssn_app.models import Survivor, Inventory, Item
+
 from .helper import create_survivor_with_inventory
 
 # Create a logger instance

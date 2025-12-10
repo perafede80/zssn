@@ -1,7 +1,9 @@
-import random
-from django.core.management.base import BaseCommand
-from zssn_app.models import Survivor, Inventory, Item
 import logging
+import random
+
+from django.core.management.base import BaseCommand
+
+from zssn_app.models import Inventory, Item, Survivor
 
 logger = logging.getLogger(__name__)
 
@@ -24,27 +26,19 @@ class Command(BaseCommand):
             )
 
             # Add random inventory items for each survivor
-            for _ in range(random.randint(1, 4)):
-                self.add_or_update_inventory(
-                    survivor=survivor,
-                    item=random.choice([Item.WATER, Item.FOOD, Item.MEDICATION, Item.AMMUNITION]),
-                    quantity=random.randint(1, 10)
-                )
+            self.add_random_inventory(survivor)
 
-        logger.debug('Successfully added 10 survivors with inventory!')
+        logger.debug('Successfully seeded 10 survivors with inventory!')
 
-    def add_or_update_inventory(self, survivor, item, quantity):
+    def add_random_inventory(self, survivor):
         """
-        Adds a new inventory item for a survivor or updates the quantity if the item already exists.
+        Adds a set of unique random inventory items for a survivor.
         """
-        # Check if an inventory item of this type already exists for the survivor
-        inventory_item, created = Inventory.objects.get_or_create(
-            survivor=survivor,
-            item=item,
-            defaults={'quantity': quantity}
-        )
+        available_items = [Item.WATER, Item.FOOD, Item.MEDICATION, Item.AMMUNITION]
+        num_items = random.randint(1, len(available_items))
+        selected_items = random.sample(available_items, num_items)
 
-        # If the inventory item already exists, update its quantity
-        if not created:
-            inventory_item.quantity += quantity
-            inventory_item.save()
+        for item in selected_items:
+            quantity = random.randint(1, 10)
+            Inventory.objects.create(survivor=survivor, item=item, quantity=quantity)
+

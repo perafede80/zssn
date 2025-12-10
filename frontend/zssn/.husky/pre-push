@@ -1,0 +1,9 @@
+#!/bin/sh
+cd frontend/zssn && npm test -- --no-watch
+
+# Run backend checks (Django tests with coverage)
+cd ../../backend/scripts
+./run_backend_pre_push_tests.sh
+
+# If all checks pass, allow the push
+exit 0

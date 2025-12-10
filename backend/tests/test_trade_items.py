@@ -1,8 +1,16 @@
 import logging
+
 from django.test import TestCase
 from rest_framework.test import APIClient
-from zssn_app.models import Survivor, Inventory, Item
-from .helper import create_survivor_with_specific_inventory
+
+from .helper import (
+    DEFAULT_AMMUNITION_QUANTITY,
+    DEFAULT_FOOD_QUANTITY,
+    DEFAULT_MEDICATION_QUANTITY,
+    DEFAULT_WATER_QUANTITY,
+    create_survivor_with_specific_inventory,
+)
+
 # Configure logging
 logger = logging.getLogger(__name__)
 
@@ -12,12 +20,25 @@ class TradeSurvivorsTest(TestCase):
         self.client = APIClient()
 
         # Create two survivors with inventories
-        self.survivor_a = create_survivor_with_specific_inventory(water_qty=2, food_qty=3, medication_qty=1, ammunition_qty=5)
+        self.survivor_a = create_survivor_with_specific_inventory(
+            water_qty=DEFAULT_WATER_QUANTITY,
+            food_qty=DEFAULT_FOOD_QUANTITY,
+            medication_qty=DEFAULT_MEDICATION_QUANTITY,
+            ammunition_qty=DEFAULT_AMMUNITION_QUANTITY)
 
-        self.survivor_b = create_survivor_with_specific_inventory(water_qty=2, food_qty=3, medication_qty=1, ammunition_qty=5)
+        self.survivor_b = create_survivor_with_specific_inventory(
+            water_qty=DEFAULT_WATER_QUANTITY,
+            food_qty=DEFAULT_FOOD_QUANTITY,
+            medication_qty=DEFAULT_MEDICATION_QUANTITY,
+            ammunition_qty=DEFAULT_AMMUNITION_QUANTITY)
 
         # Create an infected survivor
-        self.survivor_c = create_survivor_with_specific_inventory(is_infected=True,water_qty=2, food_qty=3, medication_qty=1, ammunition_qty=5 )
+        self.survivor_c = create_survivor_with_specific_inventory(
+            is_infected=True,
+            water_qty=DEFAULT_WATER_QUANTITY,
+            food_qty=DEFAULT_FOOD_QUANTITY,
+            medication_qty=DEFAULT_MEDICATION_QUANTITY,
+            ammunition_qty=DEFAULT_AMMUNITION_QUANTITY)
 
     def test_valid_trade(self):
         """Test a valid trade between two survivors."""
@@ -87,8 +108,8 @@ class TradeSurvivorsTest(TestCase):
         inventory_b = self.survivor_b.get_inventory()
 
         # Ensure inventories remain unchanged
-        self.assertEqual(inventory_a.get("WATER", 0), 2)
-        self.assertEqual(inventory_b.get("AMMUNITION", 0), 5)
+        self.assertEqual(inventory_a.get("WATER", 0), DEFAULT_WATER_QUANTITY)
+        self.assertEqual(inventory_b.get("AMMUNITION", 0), DEFAULT_AMMUNITION_QUANTITY)
         logger.info("Completed test_unbalanced_trade")
 
     def test_trade_with_infected_survivor(self):
@@ -113,6 +134,6 @@ class TradeSurvivorsTest(TestCase):
         inventory_c = self.survivor_c.get_inventory()
 
         # Ensure inventories remain unchanged
-        self.assertEqual(inventory_a.get("WATER", 0), 2)
-        self.assertEqual(inventory_c.get("AMMUNITION", 0), 5)
+        self.assertEqual(inventory_a.get("WATER", 0), DEFAULT_WATER_QUANTITY)
+        self.assertEqual(inventory_c.get("AMMUNITION", 0), DEFAULT_AMMUNITION_QUANTITY)
         logger.info("Completed test_trade_with_infected_survivor")

@@ -1,14 +1,15 @@
 import logging
-from django.http import JsonResponse
-from rest_framework import viewsets, status
-from .constants import REPORTS_TO_MARK_INFECTED
-from .models import Survivor, Inventory, Item
-from .serializer import SurvivorSerializer
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
-from .services import SurvivorService, TradeService
+
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.http import JsonResponse
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
+from rest_framework.response import Response
+
+from .models import Survivor
+from .serializer import SurvivorSerializer
+from .services import SurvivorService, TradeService
 
 logger = logging.getLogger(__name__)
 

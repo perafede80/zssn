@@ -8,3 +8,7 @@ __pycache__/
 
 # Ignore node_module
 node_modules/
+
+# Ignore tests
+coverage/
+backend/.coverage

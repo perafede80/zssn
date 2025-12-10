@@ -1,0 +1,30 @@
+.landing-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.landing-page-container {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.landing-page-title {
+  font-family: "Press Start 2P", cursive;
+}
+
+.landing-page-intro {
+  color: #6c757d; /* textSecondary color */
+}
+
+.landing-page-buttons {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.landing-page-button {
+  font-family: "Press Start 2P", cursive;
+}

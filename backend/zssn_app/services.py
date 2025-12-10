@@ -1,9 +1,11 @@
 import logging
+
 from django.core.exceptions import ValidationError as DjangoValidationError
-from rest_framework.exceptions import ValidationError
 from django.db import transaction
-from .models import Survivor, Inventory, Item
+from rest_framework.exceptions import ValidationError
+
 from .constants import REPORTS_TO_MARK_INFECTED
+from .models import Inventory, Survivor
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -104,7 +106,9 @@ class TradeService:
                 logger.error(f"Inventory item '{normalized_item_name}' does not exist for survivor {from_survivor.id}")
                 raise ValidationError(f"Inventory item '{normalized_item_name}' does not exist for survivor {from_survivor.id}")
 
-            to_inventory, created = Inventory.objects.get_or_create(survivor=to_survivor, item=normalized_item_name, defaults={'quantity': 0})
+            to_inventory, created = Inventory.objects.get_or_create(survivor=to_survivor,
+                                                                    item=normalized_item_name,
+                                                                    defaults={'quantity': 0})
 
             if from_inventory.quantity < quantity:
                 logger.error(f"Insufficient quantity of {normalized_item_name} for survivor {from_survivor.id}")

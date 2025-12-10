@@ -1,0 +1,79 @@
+{
+  "COMMON": {
+    "SURVIVOR_NOT_FOUND": "Survivor not found. Please go back to the list.",
+    "NAME": "Survivor Name:",
+    "AGE": "Age:",
+    "GENDER": "Gender:",
+    "LOCATION": "Location:",
+    "LATITUDE": "Latitude:",
+    "LONGITUDE": "Longitude:",
+    "INVENTORY": "Inventory:",
+    "DESCRIPTION": "The world has fallen into chaos. Find survivors, trade items, and stay alive!",
+    "REPORT_BUTTON": "Create Survivor",
+    "VIEW_SURVIVORS": "View Survivors",
+    "NO_INVENTORY": "No inventory available.",
+    "SURVIVOR_DETAILS_NOT_FOUND": "Failed to load survivor details.",
+    "BUTTON": {
+      "TRADE": "Trade",
+      "CANCEL": "Cancel"
+    }
+  },
+  "LANDING_PAGE": {
+    "TITLE": "🧟‍♂️ Zombie Survival Network 🧟‍♀️",
+    "DESCRIPTION": "The world has fallen into chaos. Find survivors, trade items, and stay alive!",
+    "CREATE_SURVIVOR": "Create Survivor",
+    "VIEW_SURVIVORS": "View Survivors"
+  },
+  "REPORT_PAGE": {
+    "ERROR_MESSAGE": "Invalid report session.",
+    "REPORT": {
+      "SUBMISSION_SUCCESSFUL": "Report submitted successfully!",
+      "SUBMISSION_FAILED": "Error submitting report. Please try again.",
+      "FORM": {
+        "TITLE": "Report:",
+        "COMMENTS": "Additional Comments",
+        "SUBMIT": "Submit Report"
+      }
+    }
+  },
+  "REPORT_SELECTION_PAGE": {
+    "TITLE": "Select a Survivor to Report",
+    "REPORT_BUTTON": "Report"
+  },
+  "SURVIVOR_DETAILS_PAGE": {
+    "ERROR_MESSAGE": "Survivor not found. Please go back to the list.",
+    "BUTTON": {
+      "UPDATE_LOCATION": "Update Location",
+      "TRADE_ITEMS": "Trade Items",
+      "REPORT": "Report Survivor",
+      "BACK": "Back to Survivors"
+    }
+  },
+  "TRADE_PAGE": {
+    "TITLE": "Select a Survivor to Trade With",
+    "NO_SURVIVORS": "No available survivors with inventory",
+    "BACK_BUTTON": "Back to Survivors"
+  },
+  "TRADE_SELECTION_PAGE": {
+    "TITLE": "Select a Survivor to Trade with"
+  },
+  "TRADE_INTERFACE_PAGE": {
+    "INVALID_TRADE": "Invalid trade session.",
+    "TRADE_BETWEEN": "Trade between $t({{survivor}}) and $t({{tradingWith}})",
+    "SURVIVOR_NAME_INVENTORY": "$t({{survivor}})'s Inventory",
+    "BUTTON": {
+      "BACK": "Go Back to Trade Selection",
+      "CONFIRM": "Confirm Trade"
+    },
+    "TOTAL_POINTS": "Total Points:"
+  },
+  "UPDATE_LOCATION_PAGE": {
+    "TITLE": "Update Survivor Location",
+    "UPDATE_BUTTON": "Update Location",
+    "UPDATE_SUCCESS": "Location updated successfully!",
+    "UPDATE_FAILURE": "Failed to update location. Please try again.",
+    "INVALID_LATITUDE": "Latitude must be between -90 and 90",
+    "INVALID_LONGITUDE": "Longitude must be between -180 and 180",
+    "BACK_BUTTON": "Back to Survivor List"
+  }
+}

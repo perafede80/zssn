@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Install necessary system dependencies
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends nano iputils-ping && \
+    apt-get install -y --no-install-recommends nano iputils-ping libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -20,4 +20,4 @@ COPY . .
 # Expose port 3000
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]

@@ -1,5 +1,11 @@
 import random
-from zssn_app.models import Survivor, Inventory, Item
+
+from zssn_app.models import Inventory, Item, Survivor
+
+DEFAULT_WATER_QUANTITY= 2
+DEFAULT_FOOD_QUANTITY= 3
+DEFAULT_MEDICATION_QUANTITY= 1
+DEFAULT_AMMUNITION_QUANTITY= 5
 
 def create_survivor(latitude=None, longitude=None, is_infected=False):
     """Helper method to create a survivor."""
@@ -40,7 +46,14 @@ def create_survivor_with_inventory(latitude=None, longitude=None, is_infected=Fa
     create_inventory(survivor, inventory_items)
     return survivor
 
-def create_survivor_with_specific_inventory(latitude=None, longitude=None,is_infected=False, water_qty=None, food_qty=None, medication_qty=None, ammunition_qty=None):
+def create_survivor_with_specific_inventory(
+        latitude=None,
+        longitude=None,
+        is_infected=False,
+        water_qty=None,
+        food_qty=None,
+        medication_qty=None,
+        ammunition_qty=None):
     """Helper method to create a survivor with a specific quantity per type of items in inventory."""
     survivor = create_survivor(latitude=latitude, longitude=longitude, is_infected=is_infected)
 

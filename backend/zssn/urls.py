@@ -1,7 +1,8 @@
 from django.contrib import admin
-from zssn_app.views import health_check, SurvivorViewSet
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+
+from zssn_app.views import SurvivorViewSet, health_check
 
 # Create a router and register the SurvivorViewSet
 router = DefaultRouter()

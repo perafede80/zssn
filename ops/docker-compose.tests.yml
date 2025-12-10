@@ -1,0 +1,43 @@
+services:
+  backend-tests:
+    build: ../backend
+    container_name: zssn_backend_tests
+    restart: on-failure
+    volumes:
+      - ../backend:/app
+    env_file:
+      - ../backend/.env
+    entrypoint: ["/app/scripts/run_backend_tests.sh"]
+    networks:
+      - zssn_network
+
+  frontend-tests:
+    build: ../frontend/zssn
+    container_name: zssn_frontend_tests
+    volumes:
+      - ../frontend/zssn:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_NO_WARNINGS=1
+    command: npm run test:coverage
+    networks:
+      - zssn_network
+
+  cypress:
+    image: cypress/included:14.0.3
+    container_name: zssn_cypress
+    environment:
+      - CYPRESS_baseUrl=http://zssn_frontend:3000
+    working_dir: /app/e2e
+    volumes:
+    - ../frontend/zssn:/app  
+    - ../frontend/zssn/e2e:/app/e2e
+    networks:
+      - zssn_network
+    command: ["npx", "cypress", "run"]
+
+networks:
+  zssn_network:
+    name: zssn_network
+    external: true
